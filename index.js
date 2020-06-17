@@ -1,14 +1,16 @@
 const redux = require('redux');
+const reduxlogger = require('redux-logger');
+
 const createStore = redux.createStore;
 const combineReducers = redux.combineReducers;
-
+const applyMiddleware = redux.applyMiddleware;
+const logger = reduxlogger.createLogger();
 
 const BUY_CAKE = 'BUY_CAKE';
 const BUY_ICECREAM = 'BUY_ICECREAM';
 function buyCake() {
     return {
         type: BUY_CAKE,
-        info: 'First redux action'
     }
 } // action: chi thi (type) --> ra lenh lam gi do
 
@@ -18,19 +20,10 @@ function buyIceCream() {
     }
 } // ACTION
 
-const initialState = {
-    numOfCakes: 10,
-    numOfIceCreams: 20
-} // state --> Prive Object, ko thể tác động trực tiếp, tác động thông qua Store, vì Store chính là đối tượng quản lý của State, su dung phuong thuc store.getState()
-
-/* Chia nho state */
-const initialCakeState = {
-    numOfCakes: 10
-};
-
-const initialIceCreamState = {
-    numOfIceCreams: 20
-};
+// const initialState = {
+//     numOfCakes: 10,
+//     numOfIceCreams: 20
+// } // state --> Prive Object, ko thể tác động trực tiếp, tác động thông qua Store, vì Store chính là đối tượng quản lý của State, su dung phuong thuc store.getState()
 
 // const reducer = (state = initialState, action) => { 
 //     switch (action.type) {
@@ -45,6 +38,15 @@ const initialIceCreamState = {
 //         default: return state
 //     }
 // }; // function, phuong thuc, 2 tham so, oldState and action 
+
+/* Chia nho state */
+const initialCakeState = {
+    numOfCakes: 10
+};
+
+const initialIceCreamState = {
+    numOfIceCreams: 20
+};
 
 const cakeReducer = (state = initialCakeState, action) => { 
     switch (action.type) {
@@ -75,13 +77,18 @@ const rootReducer = combineReducers({
     iceCream: iceCreamReducer
 });
 
-const store = createStore(rootReducer);
+// const store = createStore(rootReducer);
+/* Use Middleware */
+const store = createStore(rootReducer, applyMiddleware(logger));
+console.log(store)
 // const store = createStore(reducer)
 console.log('Initial state', store.getState())
 store.subscribe(() => console.log('Update State', store.getState()))
+store.subscribe(() => {})
 store.dispatch(buyCake())
 store.dispatch(buyCake())
 store.dispatch(buyCake())
 store.dispatch(buyIceCream())
 store.dispatch(buyIceCream())
 
+ 
